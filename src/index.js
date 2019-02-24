@@ -28,6 +28,10 @@ app.get('/', (req, res, next) => {
 	res.send('Hello word!');
 });
 
+app.get('/test/why', (req, res, next) => {
+	res.send('ALO WORLD');
+});
+
 app.all('/api/*', authMiddleware);
 app.use('/api', routes);
 
