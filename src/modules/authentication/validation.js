@@ -15,8 +15,7 @@ export const RegisterParams = Joi.object().keys({
   email: Joi.string().required(),
   password: Joi.string().required(),
   phoneNumber: Joi.string().required(),
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required()
+  fullName: Joi.string().required(),
 });
 
 export const ResetPasswordParams = Joi.object().keys({

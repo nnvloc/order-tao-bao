@@ -1,11 +1,11 @@
 import Joi from 'src/utils/pjoi';
 
 export const createUserSchema = Joi.object().keys({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  fullName: Joi.string().required(),
   email: Joi.string().required(),
   phoneNumber: Joi.string().required(),
   password: Joi.string().required(),
+  money: Joi.number()
 });
 
 export const ChangePasswordRequest = Joi.object().keys({

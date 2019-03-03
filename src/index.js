@@ -4,6 +4,7 @@ import path from 'path';
 import db from 'src/models/';
 import routes from 'src/modules';
 import authMiddleware from 'src/middlewares/authentication';
+import { handleErrorResponse } from 'src/utils/response';
 const app = express();
 app.use(express.static(path.join(__dirname, './')));
 
@@ -37,7 +38,7 @@ app.use((err, req, res, next) => {
 	}
 
 	res.status(500);
-	let errorMsg = 'general server error!';
+	let errorMsg = process.env.NODE_ENV === 'development' ? err.message : 'general server error!';
 	if (
 		err.status === 401
 		|| err.status === 400
@@ -47,9 +48,7 @@ app.use((err, req, res, next) => {
 		errorMsg = err.message;
 	}
 
-	res.json({
-		error: errorMsg,
-	});
+	handleErrorResponse(res, false, errorMsg);
 });
 
 module.exports = app;

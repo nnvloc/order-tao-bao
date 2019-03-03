@@ -3,6 +3,7 @@ import AuthService from './service';
 import TokenService from 'src/modules/token/service';
 import model from 'src/models';
 import Joi from 'src/utils/pjoi';
+import { handleSuccessResponse } from 'src/utils/response';
 import { LoginParams, RegisterParams, ResetPasswordParams, ForgotPasswordParams } from './validation';
 import { ItemConflictError, BadRequestError, ItemNotFoundError, ValidationError } from 'src/utils/errors';
 import { AuthorizationError } from './errors';
@@ -33,9 +34,7 @@ class AuthController {
           return AuthService.generateToken(jwtData);
         })
         .then(result => {
-          res.json({
-            success: true
-          });
+          handleSuccessResponse(res, true);
         })
         .catch(err => {
           next(err);
@@ -44,26 +43,6 @@ class AuthController {
       next(err);
     }
   };
-
-  verifyAccount(req, res, next) {
-    try {
-      if(!req.user) {
-        throw new BadRequestError();
-      }
-
-      UserService.updateUserById(req.user.id, {emailConfirmed: true})
-        .then(result => {
-          res.json({
-            success: true
-          });
-        })
-        .catch(err => {
-          next(err);
-        });
-    } catch(err) {
-      next(err);
-    }
-  }
 
   login(req, res, next) {
     try {
@@ -91,7 +70,7 @@ class AuthController {
           return AuthService.generateToken(jwtData);
         })
         .then(jwtToken => {
-          res.json({
+          handleSuccessResponse(res, true, {
             user: UserService.styleUserResponse(user),
             token: jwtToken
           });
@@ -124,106 +103,44 @@ class AuthController {
     }
   };
 
-  forgotPassword(req, res, next) {
-    try {
-      let user;
-      Joi.validate(req.body, ForgotPasswordParams)
-        .then(params => {
-          return UserService.getUserByEmail(params.email);
-        })
-        .then(u => {
-          if(!u) {
-            throw new ItemNotFoundError('Not found!');
-          }
+  // refreshToken(req, res, next) {
+  //   try {
+  //     const oldToken = req.body.token;
+  //     const userId = req.body.userId;
 
-          user = u;
-          const jwtData = {
-            id: u.id,
-            email: u.email
-          };
-          return AuthService.generateToken(jwtData);
-        })
-        .then(jwtToken => {
-          // TODO send email to user for a link to reset password
-          const mailTemplateParams = {
-            user,
-            forgotPasswordUrl: `${config.WEB_DOMAIN}/reset-password?token=${jwtToken}`
-          }
-          let mailTpl = getForgotPasswordTemplate(mailTemplateParams);
-          mailTpl.toUser = [user.email];
-          const emailOpts = MailService.initMailOptions(mailTpl);
-          return MailService.sendEmail(emailOpts);
-        })
-        .then(result => {
-          res.json({
-            success: true
-          });
-        })
-        .catch(err => {
-          next(err);
-        });
-    } catch(err) {
-      next(err);
-    }
-  }
-
-  resetPassword(req, res, next) {
-    try {
-      Joi.validate(req.body, ResetPasswordParams)
-        .then(params => {
-          return UserService.updateUserById(req.user.id, {password: req.body.password});
-        })
-        .then(result => {
-          res.json({
-            success: true
-          });          
-        })
-        .catch(err => {
-          next(err);
-        });
-    } catch(err) {
-      next(err);
-    }
-  };
-
-  refreshToken(req, res, next) {
-    try {
-      const oldToken = req.body.token;
-      const userId = req.body.userId;
-
-      TokenService.getToken(oldToken)
-        .then(t => {
-          if (!t) {
-            throw new ItemNotFoundError('Not found token!');
-          }
+  //     TokenService.getToken(oldToken)
+  //       .then(t => {
+  //         if (!t) {
+  //           throw new ItemNotFoundError('Not found token!');
+  //         }
           
-          if (t.userId !== userId) {
-            throw new BadRequestError('Bad request.');
-          }
-          return TokenService.removeToken(oldToken);
-        })
-        .then(result => {
-          return UserService.getUserById(userId);
-        })
-        .then(u => {
-          const jwtData = {
-            id: u.id,
-            email: u.email
-          };
-          return AuthService.generateToken(jwtData);
-        })
-        .then(jwtToken => {
-          res.json({
-            token: jwtToken,
-          });
-        })
-        .catch(err => {
-          next(err);
-        });
-    } catch(err) {
-      next(err);
-    }
-  }
+  //         if (t.userId !== userId) {
+  //           throw new BadRequestError('Bad request.');
+  //         }
+  //         return TokenService.removeToken(oldToken);
+  //       })
+  //       .then(result => {
+  //         return UserService.getUserById(userId);
+  //       })
+  //       .then(u => {
+  //         const jwtData = {
+  //           id: u.id,
+  //           email: u.email
+  //         };
+  //         return AuthService.generateToken(jwtData);
+  //       })
+  //       .then(jwtToken => {
+  //         res.json({
+  //           token: jwtToken,
+  //         });
+  //       })
+  //       .catch(err => {
+  //         next(err);
+  //       });
+  //   } catch(err) {
+  //     next(err);
+  //   }
+  // }
 }
 
 export default new AuthController();
