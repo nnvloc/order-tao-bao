@@ -18,7 +18,7 @@ const authenticate = (req, res, next) => {
       // if (_.find(nonAuthSecuredPaths, (p) => _.includes(req.path, p))) return next();
 
       // check user's authentication
-      const auth_token = req.body.auth_token || req.query.auth_token || req.headers['x-auth-token'];
+      const auth_token = req.body.auth_token || req.query.auth_token || req.headers['authorization'];
       if (auth_token) {
         jwt.verify(auth_token, token.secretKey, (err, decoded) => {
           // failed

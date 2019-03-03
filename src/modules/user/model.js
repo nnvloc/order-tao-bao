@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = function(models) {
     // associations can be defined here
     this.hasMany(models['Token'], { foreignKey: 'userId', sourceKey: 'id' });
+    this.hasOne(models['Cart'], { foreignKey: 'userId', sourceKey: 'id' });
   };
 
   // Instance methods
@@ -51,13 +52,18 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   // Hook functions
-  User.beforeCreate((instance, options) => {
-    return hashPassword(instance.password).then(hashedPwd => {
-      if(hashedPwd) {
-        instance.password = hashedPwd;
-      }
-      return instance;
-    });
+  User.beforeCreate(async (instance, options) => {
+    const hashedPwd = await hashPassword(instance.password);
+    if(hashedPwd && typeof hashedPwd !== Error) {
+      instance.password = hashedPwd;
+    }
+    return instance;
+  });
+
+  User.afterCreate(async (instance, options) => {
+    const userId = instance.id;
+    const cart = await sequelize.models.Cart.create({userId, items: ''});
+    return instance;
   });
 
   User.beforeUpdate((instance, options) => {
