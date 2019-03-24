@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
 		errorMsg = err.message;
 	}
 
-	handleErrorResponse(res, false, errorMsg);
+	handleErrorResponse(res, false, errorMsg, (err.data || null));
 });
 
 module.exports = app;

@@ -15,9 +15,12 @@ class ItemNotFoundError extends Error {
 }
 
 class BadRequestError extends Error {
-  constructor(message) {
+  constructor(message, data) {
     super(message);
     this.status = 400;
+    if (data) {
+      this.data = data;
+    }
   }
 }
 

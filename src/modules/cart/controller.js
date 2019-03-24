@@ -4,7 +4,7 @@ import { handleSuccessResponse } from 'src/utils/response';
 import { UpdateCartSchema } from './validation';
 import { BadRequestError, ItemNotFoundError, ValidationError } from 'src/utils/errors';
 
-class AuthController {
+class CartController {
   async updateCart(req, res, next) {
     try {
       const curUser = req.user;
@@ -47,4 +47,4 @@ class AuthController {
   }
 }
 
-export default new AuthController();
+export default new CartController();

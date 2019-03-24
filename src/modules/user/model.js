@@ -39,6 +39,8 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     this.hasMany(models['Token'], { foreignKey: 'userId', sourceKey: 'id' });
     this.hasOne(models['Cart'], { foreignKey: 'userId', sourceKey: 'id' });
+    this.hasMany(models['Order'], { foreignKey: 'userId', sourceKey: 'id', as: 'orders' });
+    this.hasMany(models['SubOrder'], { foreignKey: 'userId', sourceKey: 'id', as: 'subOrders' });
   };
 
   // Instance methods
