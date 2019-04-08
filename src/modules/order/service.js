@@ -5,6 +5,7 @@ const Order = models.Order;
 import { ItemNotFoundError } from 'src/utils/errors';
 import Joi from 'src/utils/pjoi';
 import moment from 'moment';
+import orderItemService from '../orderItem/service';
 
 const DEFAULT_EXCHANGE_MONEY_RATE = 3500;
 const STATUS = {
@@ -77,7 +78,12 @@ class OrderService {
   }
 
   styleOrderResponse(order) {
-    return order.toJSON();
+    let result = order.toJSON();
+    if (result.items) {
+      result.items = result.items.map(item => orderItemService.styleOrderItemResponse(item));
+    }
+
+    return result;
   };
 }
 

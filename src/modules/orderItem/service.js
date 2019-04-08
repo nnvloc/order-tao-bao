@@ -60,7 +60,12 @@ class OrderItemService {
   }
 
   styleOrderItemResponse(orderItem) {
-    return orderItem.toJSON();
+    let result = orderItem.toJSON ? orderItem.toJSON() : { ...orderItem };
+    if (result.skuProps && typeof(result.skuProps) === 'string') {
+      result.skuProps = JSON.parse(result.skuProps);
+    }
+
+    return result;
   };
 }
 

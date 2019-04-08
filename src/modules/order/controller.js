@@ -61,6 +61,7 @@ class OrderController {
       }
       OrderService.getOrderByUser(curUser.id, query)
         .then(orders => {
+          orders = orders.map(o => OrderService.styleOrderResponse(o));
           handleSuccessResponse(res, true, { orders });
         })
         .catch(err => {
