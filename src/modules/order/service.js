@@ -51,6 +51,26 @@ class OrderService {
     });
   }
 
+  getOrderById(id) {
+    return new Promise((resolve, reject) => {
+      return Order.find({ where: { id } })
+        .then(o => {
+          return resolve(o);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
+  updateOrderById(id, data) {
+    return new Promise((resolve, reject) => {
+      return Order.update({ ...data }, { where: { id } })
+        .then(result => {
+          return resolve(result);
+        })
+        .catch(err => reject(err));
+    })
+  }
+
   generateNewOrderData(curUser, items) {
     const serviceFee = 5000;
     const totalItemsAmount = items.reduce((result, item) => {

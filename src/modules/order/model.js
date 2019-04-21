@@ -23,8 +23,9 @@ module.exports = (sequelize, DataTypes) => {
   Order.associate = function(models) {
     // associations can be defined here
     this.hasMany(models['SubOrder'], { foreignKey: 'orderId', sourceKey: 'id', });
-    this.hasMany(models['OrderItem'], { foreignKey: 'orderId', sourceKey: 'id', as: 'items' })
-    this.belongsTo(models['User'], { foreignKey: 'userId', });
+    this.hasMany(models['OrderItem'], { foreignKey: 'orderId', sourceKey: 'id', as: 'items' });
+    this.hasMany(models['Transaction'], { foreignKey: 'orderId', sourceKey: 'id', as: 'transactions' })
+    this.belongsTo(models['User'], { foreignKey: 'userId', });    
   };
   return Order;
 };

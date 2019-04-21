@@ -31,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE,
-    money: DataTypes.DOUBLE,
+    money: {
+      type: DataTypes.DOUBLE,
+      default: 0,
+    }
   }, {});
 
   // Associations
@@ -41,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     this.hasOne(models['Cart'], { foreignKey: 'userId', sourceKey: 'id' });
     this.hasMany(models['Order'], { foreignKey: 'userId', sourceKey: 'id', as: 'orders' });
     this.hasMany(models['SubOrder'], { foreignKey: 'userId', sourceKey: 'id', as: 'subOrders' });
+    this.hasMany(models['Transaction'], { foreignKey: 'userId', sourceKey: 'id', as: 'transactions' })
   };
 
   // Instance methods
